@@ -12,6 +12,7 @@ import OwnerProfile from "./pages/owner/OwnerProfile";
 import Add from "./pages/admin/Add";
 import Unauthorized from "./pages/Unauthorized";
 import CreateStore from "./pages/admin/CreateStore";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const { auth } = useAuth();
@@ -52,15 +53,24 @@ function App() {
 
         <Route path="/unauthorized" element={<Unauthorized />} />
 
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/add-new" element={<Add />} />
-        <Route path="/admin/create-store" element={<CreateStore />} />
+        {/* Admin Routes */}
+        <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/add-new" element={<Add />} />
+          <Route path="/admin/create-store" element={<CreateStore />} />
+        </Route>
 
-        <Route path="/owner/dashboard" element={<OwnerDashboard />} />
-        <Route path="/owner/profile" element={<OwnerProfile />} />
+        {/* Owner Routes */}
+        <Route element={<ProtectedRoute allowedRoles={["STORE_OWNER"]} />}>
+          <Route path="/owner/dashboard" element={<OwnerDashboard />} />
+          <Route path="/owner/profile" element={<OwnerProfile />} />
+        </Route>
 
-        <Route path="/user/store-list" element={<StoreList />} />
-        <Route path="/user/profile" element={<UserProfile />} />
+        {/* User Routes */}
+        <Route element={<ProtectedRoute allowedRoles={["USER"]} />}>
+          <Route path="/user/store-list" element={<StoreList />} />
+          <Route path="/user/profile" element={<UserProfile />} />
+        </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
