@@ -15,16 +15,58 @@ datasource db {
 
 enum Role {
   ADMIN
+  USER
   STORE_OWNER
-  NORMAL_USER
 }
 
 model User {
-  id       String   @id @default(cuid())
-  email     String   @unique
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(60) @unique
+  email     String   @unique 
   password  String
-  name      String?
-  role      Role     @default(NORMAL_USER)
+  address   String   @db.VarChar(400)
+  role      Role     @default(USER)
+  
+  // Optional one-to-one relation with Store
+  store     Store?   @relation("UserStore")
+
+  // One-to-many relation with Rating
+  ratings   Rating[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Store {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(60) @unique
+  address   String   @db.VarChar(400)
+
+  // One-to-one relation back to User (owner)
+  owner     User     @relation("UserStore", fields: [ownerId], references: [id])
+  ownerId   Int      @unique // Must be unique for one-to-one
+
+  ratings   Rating[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Rating {
+  id        Int      @id @default(autoincrement())
+  rating    Int      @db.Integer
+
+  // Many-to-one relation to User
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+
+  // Many-to-one relation to Store
+  store     Store    @relation(fields: [storeId], references: [id])
+  storeId   Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Each user can rate each store only once
+  @@unique([userId, storeId])
 }
