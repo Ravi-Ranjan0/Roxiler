@@ -22,7 +22,7 @@ import { useNavigate } from "react-router";
 const roleRedirectMap: Record<string, string> = {
   "ADMIN": "/admin/dashboard",
   "STORE_OWNER": "/owner/dashboard",
-  "USER": "/user/store-list",
+  "USER": "/user/dashboard",
 };
 
 const LoginForm = () => {
@@ -45,8 +45,9 @@ const LoginForm = () => {
           user: data.user,
         });
         const role = data.user.role;
-        const redirectPath = roleRedirectMap[role] ?? "/";
+        const redirectPath = `/${role.toLowerCase().replace("_", "")}/dashboard`;
         navigate(redirectPath);
+        console.log("Login successful, redirecting to:", redirectPath);
       }
     } catch (error) {
       console.error("Login error:", error);

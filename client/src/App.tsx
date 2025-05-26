@@ -62,13 +62,13 @@ function App() {
 
         {/* Owner Routes */}
         <Route element={<ProtectedRoute allowedRoles={["STORE_OWNER"]} />}>
-          <Route path="/owner/dashboard" element={<OwnerDashboard />} />
-          <Route path="/owner/profile" element={<OwnerProfile />} />
+          <Route path="/storeowner/dashboard" element={<OwnerDashboard />} />
+          <Route path="/storeowner/profile" element={<OwnerProfile />} />
         </Route>
 
         {/* User Routes */}
         <Route element={<ProtectedRoute allowedRoles={["USER"]} />}>
-          <Route path="/user/store-list" element={<StoreList />} />
+          <Route path="/user/dashboard" element={<StoreList />} />
           <Route path="/user/profile" element={<UserProfile />} />
         </Route>
 

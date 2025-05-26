@@ -8,11 +8,24 @@ import ApiError from "../utils/ApiError";
 
 export const getAllStores = asyncHandler(async (req: RequestWithUser, res: Response) => {
 
+    const userId = req.user?.id;
+
     const storeRatings = await prisma.rating.groupBy({
         by: ['storeId'],
         _avg: {
             rating: true,
         },
+    });
+
+    const userRatings = await prisma.rating.findMany({
+        where: {
+            userId: userId
+        },
+        select: {
+            id: true,
+            storeId: true,
+            rating: true
+        }
     });
 
 
@@ -29,13 +42,19 @@ export const getAllStores = asyncHandler(async (req: RequestWithUser, res: Respo
         }
     });
 
-    const storesWithAvgRating = stores.map(store => {
-        const storeRating = storeRatings.find(r => r.storeId === store.id);
+    const storesWithAvgRating = stores.map((store) => {
+        const avg = storeRatings.find(r => r.storeId === store.id)?._avg?.rating ?? null;
+        const userRatingEntry = userRatings.find(r => r.storeId === store.id);
+
         return {
             ...store,
-            averageRating: storeRating?._avg?.rating ?? null
+            averageRating: avg,
+            userRating: userRatingEntry?.rating ?? null,
+            ratingId: userRatingEntry?.id ?? null,
         };
     });
+
+
 
     return res.status(200).json(new ApiResponse({
         statusCode: 200,
@@ -92,8 +111,8 @@ export const getAllTheUsersWhoHaveRatedAStore = asyncHandler(async (req: Request
         statusCode: 200,
         message: "Ratings fetched successfully",
         data: {
-            averageRating: average._avg.rating ?? null,
-            ratings
+            ratings,
+            averageRating: average._avg.rating ?? 0,
         }
     }));
 });

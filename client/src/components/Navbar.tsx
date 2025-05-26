@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Link } from "react-router"; // FIXED
-import Logout from "./Logout"; // Your reusable component
+import { Link } from "react-router";
+import Logout from "./Logout";
 import type { UserRole } from "@/schemas/user.schema";
+import { X, Menu } from "lucide-react";
 
 
 type MenuItem = {
@@ -24,11 +25,11 @@ const Navbar: React.FC = () => {
       { label: "Add Account", href: "/admin/add-new" },
     ],
     STORE_OWNER: [
-      { label: "Dashboard", href: "/owner/dashboard" },
-      { label: "Profile", href: "/owner/profile" },
+      { label: "Dashboard", href: "/storeowner/dashboard" },
+      { label: "Profile", href: "/storeowner/profile" },
     ],
     USER: [
-      { label: "Stores", href: "/user/store-list" },
+      { label: "Stores", href: "/user/dashboard" },
       { label: "Profile", href: "/user/profile" },
     ],
     guest: [
@@ -43,12 +44,10 @@ const Navbar: React.FC = () => {
     <nav className="bg-white border-b shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          {/* Logo */}
           <div className="flex-shrink-0 text-xl font-bold text-blue-600">
             <Link to="/">Roxiler</Link>
           </div>
 
-          {/* Desktop Menu */}
           <div className="hidden md:flex md:items-center space-x-6">
             {currentMenuItems.map(({ label, href }) => (
               <Link
@@ -68,7 +67,6 @@ const Navbar: React.FC = () => {
             )}
           </div>
 
-          {/* Mobile Hamburger */}
           <div className="md:hidden">
             <button
               onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
@@ -76,20 +74,15 @@ const Navbar: React.FC = () => {
               aria-label="Toggle Menu"
             >
               {isMobileMenuOpen ? (
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className="h-6 w-6 text-gray-700" />
               ) : (
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+                <Menu className="h-6 w-6 text-gray-700" />
               )}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white shadow-md border-t">
           <ul className="space-y-2 px-4 py-4">

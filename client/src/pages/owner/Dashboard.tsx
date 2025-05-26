@@ -1,34 +1,39 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Star } from "lucide-react"
 import { getStoreRatingsService } from "@/services/rating.service"
 
 type RatingEntry = {
+  id: number
+  rating: number
+  userId: number
+  storeId: number
+  createdAt: string
+  updatedAt: string
   user: {
+    id: number
     name: string
     email: string
   }
-  rating: number
-  comment?: string
 }
 
 const Dashboard = () => {
+  const storeId = 41
+
   const [averageRating, setAverageRating] = useState<number>(0)
   const [ratings, setRatings] = useState<RatingEntry[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
-
-  // TEMP: Replace with dynamic storeId (e.g., from auth/user context or route param)
-  const storeId = 1
 
   useEffect(() => {
     const fetchRatings = async () => {
       try {
         setIsLoading(true)
         const res = await getStoreRatingsService(storeId)
-        const data = res.data.data
+        const data = res.data
+        console.log("Fetched ratings:", data);
 
         setRatings(data.ratings)
         setAverageRating(data.averageRating ?? 0)
@@ -40,7 +45,7 @@ const Dashboard = () => {
     }
 
     fetchRatings()
-  }, [storeId]) // Re-run when storeId changes
+  }, [storeId])
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-10">
@@ -86,8 +91,8 @@ const Dashboard = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {ratings.map((r, i) => (
-                  <TableRow key={i}>
+                {ratings.map((r) => (
+                  <TableRow key={r.id}>
                     <TableCell>{r.user.name}</TableCell>
                     <TableCell>{r.user.email}</TableCell>
                     <TableCell className="text-yellow-600 font-medium">{r.rating} ★</TableCell>

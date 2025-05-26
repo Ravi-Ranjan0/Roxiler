@@ -1,7 +1,5 @@
 import axios from 'axios';
 import Cookies from "js-cookie";
-
-
 const token = Cookies.get("accessToken");
 const baseUrl: string = import.meta.env.VITE_API_URL + '/admin';
 
